@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">-MANGA NEST-</div>
+    </nav>
+
+    <div class="navigation">
+        <a href="anime.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <div class="search-bar">
+            <input type="search" id="search-input" placeholder="Search">
+        </div>
+    </div>
+
+    <h1 id="manga-title">Loading...</h1>
+    <div id="manga-image-container">
+        <img id="manga-image" alt="Manga Image" style="width: 100%; height: auto;">
+    </div>
+    <p id="manga-description"></p>
+    <p><strong>Genres:</strong> <span id="manga-genres"></span></p>
+    <p><strong>Rating:</strong> <span id="manga-rating"></span></p>
+    <h2>Chapters</h2>
+    <div id="chapters-container" class="chapter-grid"></div>
+
+    <script>
+        function getMangaIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id'); 
+        }
+
+        async function loadMangaData() {
+            const mangaId = getMangaIdFromUrl();
+            if (!mangaId) {
+                alert('No manga ID found in URL');
+                return;
+            }
+
+            try {
+                const response = await fetch('manga_data_full.json'); 
+                const mangaData = await response.json();
+
+                const selectedManga = mangaData.find(manga => manga.Title === mangaId);
+
+                if (!selectedManga) {
+                    alert('Manga not found!');
+                    return;
+                }
+
+                document.getElementById('manga-title').textContent = selectedManga.Title;
+                document.getElementById('manga-image').src = selectedManga.image_url;
+                document.getElementById('manga-rating').textContent = selectedManga.Rating || "NA";
+                
+                if (Array.isArray(selectedManga.Genres)) {
+                    document.getElementById('manga-genres').textContent = selectedManga.Genres.join(', ');
+                }
+
+                const chaptersContainer = document.getElementById('chapters-container');
+                selectedManga.Chapters.forEach(chapter => {
+                    const chapterDiv = document.createElement('div');
+                    chapterDiv.className = 'chapter-item';
+
+                    const chapterButton = document.createElement('button');
+                    chapterButton.textContent = chapter.title;
+                    chapterButton.className = 'chapter-btn';
+
+                    chapterButton.addEventListener('click', () => {
+                        const chapterTitle = encodeURIComponent(chapter.title);
+                        window.location.href = `manga-details_mp_chapter.html?title=${chapterTitle}`;
+                    });
+
+                    chapterDiv.appendChild(chapterButton);
+                    chaptersContainer.appendChild(chapterDiv);
+                });
+            } catch (error) {
+                console.error('Error loading manga data:', error);
+                alert('Could not load manga data');
+            }
+        }
+
+        window.onload = loadMangaData;
+    </script>
+</body>
+</html>

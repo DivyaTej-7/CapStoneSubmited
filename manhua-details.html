@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manhua Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">-MANGA NEST-</div>
+    </nav>
+
+    <div class="navigation">
+        <a href="anime.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <div class="search-bar">
+            <input type="search" id="search-input" placeholder="Search">
+        </div>
+    </div>
+    <!-- Individual Anime View Header -->
+    <h1 id="title"></h1>
+    <div class="item-image-container">
+        <!-- Display Anime Image with Padding -->
+        <img src="" id="image" alt="" class="item-image">
+    </div>
+
+    <!-- Chapters List -->
+    <h2>Chapters</h2>
+    <div class="chapter-grid" id="chapters">
+        <!-- 12 Chapter Buttons -->
+    </div>
+
+    <div id="popup-modal" class="popup-modal" style="display:none;">
+        <div class="popup-content">
+            <h4 id="popup-title"></h4>
+            <button onclick="playChapter()" class="chapter-btn">Play</button>
+            <button onclick="downloadChapter()" class="chapter-btn">Download</button>
+            <button onclick="closePopup()" class="chapter-btn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function showPopup(chapterTitle) {
+            // Set the title in the popup
+            document.getElementById('popup-title').textContent = chapterTitle;
+
+            // Show the popup modal
+            document.getElementById('popup-modal').style.display = 'flex';
+        }
+
+        function closePopup() {
+            // Hide the popup modal
+            document.getElementById('popup-modal').style.display = 'none';
+        }
+
+        function playChapter() {
+            // Placeholder action for playing the chapter
+            alert('Playing the chapter...');
+            closePopup();
+        }
+
+        function downloadChapter() {
+            // Placeholder action for downloading the chapter
+            alert('Downloading the chapter...');
+            closePopup();
+        }
+    </script>
+    <!-- Back Button Styled Like Chapter Buttons -->
+    <div class="back-button-container">
+        <button class="chapter-btn back-btn" onclick="window.location.href='manhua-overview.html'">Back to Overview</button>
+    </div>
+
+    <script src="manhua.js"></script>
+</body>
+</html>

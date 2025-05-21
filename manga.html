@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga List</title>
+    <link rel="stylesheet" href="style.css"> <!-- Use your existing CSS -->
+</head>
+<nav class="navbar">
+    <div class="navbar-brand">-MANGA NEST-</div>
+</nav>
+
+<div class="navigation">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <div class="search-bar">
+        <input type="search" id="search-input" placeholder="Search">
+    </div>
+</div>
+<body>
+
+<div class="anime-container" id="anime-container">
+    <!-- Anime cards will be dynamically inserted here -->
+</div>
+
+<!-- Pagination controls (optional) -->
+<div id="pagination" class="pagination"></div>
+
+<script>
+    const animePerPage = 20;  // Display 20 anime per page (adjust as needed)
+    let currentPage = 1;
+
+    // Function to fetch JSON and display anime
+    const fetchAndDisplayAnime = (page = 1) => {
+        fetch('manga_data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Clear the container and set the current page
+                const container = document.getElementById('anime-container');
+                container.innerHTML = '';
+
+                // Calculate start and end indices for the current page
+                const startIndex = (page - 1) * animePerPage;
+                const endIndex = Math.min(startIndex + animePerPage, data.length);
+
+                // Loop through anime entries for the current page
+                for (let i = startIndex; i < endIndex; i++) {
+                    const anime = data[i];
+
+                    // Create a card for each anime entry
+                    const card = document.createElement('div');
+                    card.classList.add('anime-card');
+
+                    card.innerHTML = `
+                        <img src="${anime.image_url}" alt="${anime.title}" class="anime-thumbnail">
+                        <div class="anime-details">
+                            <h3>${anime.title}</h3>
+                            <a href="manhua-details.html?id=${anime.title}" target="_blank">More Info</a>
+                        </div>
+                    `;
+
+                    // Append the card to the container
+                    container.appendChild(card);
+                }
+
+                // Render pagination
+                renderPagination(data.length, page);
+            })
+            .catch(error => console.error('Error fetching anime data:', error));
+    };
+
+    // Function to render pagination controls
+    const renderPagination = (totalItems, currentPage) => {
+        const totalPages = Math.ceil(totalItems / animePerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (let page = 1; page <= totalPages; page++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = page;
+            pageButton.classList.add('page-btn');
+            if (page === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.addEventListener('click', () => {
+                fetchAndDisplayAnime(page);
+            });
+            pagination.appendChild(pageButton);
+        }
+    };
+
+    // Initial fetch and display on page load
+    fetchAndDisplayAnime(currentPage);
+</script>
+
+</body>
+</html>
+                        <!-- <p><strong>Episodes:</strong> ${anime.episodes}</p>
+                            <p><strong>Score:</strong> ${anime.score}</p>
+                            <p>${anime.synopsis.substring(0, 150)}...</p> -->

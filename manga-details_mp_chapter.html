@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">-MANGA NEST-</div>
+    </nav>
+
+    <div class="navigation">
+        <a href="anime.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <div class="search-bar">
+            <input type="search" id="search-input" placeholder="Search">
+        </div>
+    </div>
+
+    <h1 id="chapter-title">Loading...</h1>
+    <div id="images-container"></div>
+
+    <script>
+        function getChapterTitleFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('title');
+        }
+
+        async function loadChapterData() {
+            const chapterTitle = getChapterTitleFromUrl();
+            if (!chapterTitle) {
+                alert('No chapter title found in URL');
+                return;
+            }
+
+            try {
+                const response = await fetch('manga_data_full.json'); 
+                const mangaData = await response.json();
+
+                let selectedChapter;
+                mangaData.forEach(manga => {
+                    const chapter = manga.Chapters.find(ch => ch.title === decodeURIComponent(chapterTitle));
+                    if (chapter) selectedChapter = chapter;
+                });
+
+                if (selectedChapter) {
+                    document.getElementById('chapter-title').textContent = selectedChapter.title;
+
+                    const imagesContainer = document.getElementById('images-container');
+                    if (selectedChapter.images && selectedChapter.images.length > 0) {
+                        selectedChapter.images.forEach(imageUrl => {
+                            const img = document.createElement('img');
+                            img.src = imageUrl;
+                            img.alt = selectedChapter.title;
+                            img.style.width = '100%';
+                            imagesContainer.appendChild(img);
+                        });
+                    } else {
+                        imagesContainer.textContent = 'No images available for this chapter.';
+                    }
+                } else {
+                    document.getElementById('chapter-title').textContent = 'Chapter not found';
+                }
+            } catch (error) {
+                console.error('Error loading chapter data:', error);
+                alert('Could not load chapter data');
+            }
+        }
+
+        window.onload = loadChapterData;
+    </script>
+</body>
+</html>
